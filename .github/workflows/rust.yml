@@ -40,3 +40,21 @@ jobs:
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
+    - name: Update nightly tag
+      uses: richardsimko/update-tag@master
+      with:
+        tag_name: nightly
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload nightly release
+      uses: WebFreak001/deploy-nightly@v1.1.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # automatically provided by github actions
+      with:
+        # upload URL - https://api.github.com/repos/stackabletech/agent/releases
+        upload_url: https://uploads.github.com/repos/datenkollektiv/agent/releases/32765619/assets{?name,label}
+        release_id: 32765619
+        asset_path: ./target/debug/stackable-agent
+        asset_name: stackabletech-agent-nightly
+        asset_content_type: application/x-pie-executable
+        max_releases: 1
